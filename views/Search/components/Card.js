@@ -1,7 +1,7 @@
 import React from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
 
-import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import IconButton from "@material-ui/core/IconButton";
@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Card = ({ item }) => {
+const Card = ({ item, isLoading }) => {
   const classes = useStyles();
   const {
     restaurant: { name, featured_image, url, timings }

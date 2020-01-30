@@ -8,6 +8,8 @@ import Card from "../../views/Search/components/Card";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
+import Loader from "react-loader-spinner";
+
 class Search extends React.Component {
   state = {
     query: " "
@@ -19,15 +21,32 @@ class Search extends React.Component {
       query: value
     }));
   }
-  getSearchResults(query) {
-    this.props.searchFn(query);
+  getSearchResults(query, currPage) {
+    console.log("==> currPage: ", { currPage });
+    this.props.searchFn(query, currPage);
+  }
+
+  getPages() {
+    let pages = [];
+    for (let i = 1; i <= this.props.totalPages && i <= 15; i++) {
+      pages.push(
+        <div
+          id={i}
+          style={{ padding: "5px", border: "1px solid" }}
+          onClick={() => this.getSearchResults(this.state.query, i)}
+        >
+          {i}
+        </div>
+      );
+    }
+    return pages;
   }
 
   render() {
-    const { searchResults } = this.props;
+    const { searchResults, isFetching } = this.props;
 
     // console.log("in render:--> searcResults", searchResults);
-    // const { query } = this.state;
+    const { query, isLoading } = this.state;
 
     return (
       <div style={{ margin: "40px auto", padding: "0 30px" }}>
@@ -49,11 +68,16 @@ class Search extends React.Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={e => this.getSearchResults(this.state.query)}
+            onClick={
+              () => this.getSearchResults(query, 1)
+
+              //async?? proceeded in sequence?
+            }
           >
             Search
           </Button>
         </div>
+
         <div
           style={{
             display: "flex",
@@ -62,9 +86,31 @@ class Search extends React.Component {
             justifyContent: "center"
           }}
         >
-          {searchResults.map((item, id) => (
-            <Card key={id} item={item} />
-          ))}
+          {isFetching ? (
+            <Loader
+              type="Puff"
+              color="#00BFFF"
+              height={100}
+              width={100}
+              // timeout={5000}
+              style={{ margin: "180px", zIndex: "9" }}
+            />
+          ) : (
+            searchResults.map((item, id) => (
+              <Card key={id} item={item} isLoading={isLoading} />
+            ))
+          )}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            margin: "40px auto",
+            justifyContent: "center"
+          }}
+        >
+          {searchResults ? this.getPages() : null}
         </div>
       </div>
     );
@@ -73,13 +119,16 @@ class Search extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    searchResults: state.searchReducer.searchResults
+    currPage: state.searchReducer.currPage,
+    isFetching: state.searchReducer.isFetching,
+    searchResults: state.searchReducer.searchResults,
+    totalPages: state.searchReducer.totalPages
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    searchFn: query => dispatch(searchFn(query))
+    searchFn: (query, currPage) => dispatch(searchFn(query, currPage))
   };
 };
 
