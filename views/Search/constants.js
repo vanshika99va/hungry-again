@@ -1,3 +1,9 @@
 export const SEARCH = " search rest.";
 export const SEARCH_SUCCESS = " success";
 export const SEARCH_FAILURE = "fail";
+export const GET_CATEGORIES = "get categories";
+export const GET_CAT_SUCCESS = "get cat success";
+export const GET_CAT_FAILURE = "get cat fail";
+export const HANDLE_CHECKED = "handle checked";
+export const HANDLE_QUERY_CHANGE = " handle query change";
+export const SET_CURR_OBJECT = "set cur object";
